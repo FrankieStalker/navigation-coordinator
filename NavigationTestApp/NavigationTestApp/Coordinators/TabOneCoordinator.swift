@@ -1,5 +1,7 @@
 import SwiftUI
 
+import TabOne
+
 enum TabOnePages {
     case tabOneParent, tabOneChild
 }
@@ -8,14 +10,14 @@ final class TabOneCoordinator: Hashable {
     @Binding var navigationPath: NavigationPath
     
     private var id: UUID
-    private var output: Output?
+    private var output: Output
     private var page: TabOnePages
     
     struct Output {
         var goToMainScreen: () -> Void
     }
     
-    init(navigationPath: Binding<NavigationPath>, page: TabOnePages, output: Output? = nil) {
+    init(navigationPath: Binding<NavigationPath>, page: TabOnePages, output: Output) {
         self.id = UUID()
         self.page = page
         self.output = output
@@ -41,7 +43,8 @@ final class TabOneCoordinator: Hashable {
                     self.push(
                         TabOneCoordinator(
                             navigationPath: self.$navigationPath,
-                            page: .tabOneChild
+                            page: .tabOneChild,
+                            output: self.output
                         )
                     )
                 }
@@ -53,7 +56,7 @@ final class TabOneCoordinator: Hashable {
         TabOneChild(
             output: .init(
                 gotToParent: {
-                    self.output?.goToMainScreen()
+                    self.output.goToMainScreen()
                 }
             )
         )
